@@ -2,6 +2,8 @@ import curses
 import player
 
 class World(object):
+    tick_count = 0
+
     def __init__(self, stdscr):
         self.window = stdscr
         self.ground_level = curses.LINES - 3
@@ -14,7 +16,7 @@ class World(object):
     def set_status(self, message):
         self.status_line.erase()
         self.status_line.addstr(0, 0, message)
-        self.status_line.refresh()
 
     def tick(self):
         self.player.tick()
+        self.tick_count += 1

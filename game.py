@@ -3,13 +3,13 @@
 import curses, curses.panel, time
 import world
 
-#LOOP_TIME = .1
+LOOP_TIME = .1
 
 def main(stdscr):
     curses.curs_set(0)
+    stdscr.nodelay(True)
     stdscr.clear()
     game_world = world.World(stdscr)
-    game_world.set_status("Welcome!")
     c = None
     while True:
         # do things
@@ -22,7 +22,7 @@ def main(stdscr):
         game_world.tick()
         curses.panel.update_panels()
         stdscr.refresh()
-        #time.sleep(LOOP_TIME)
+        time.sleep(LOOP_TIME)
         c = stdscr.getch()
         curses.flushinp()
 
