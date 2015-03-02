@@ -5,12 +5,12 @@ class Player(object):
     def __init__(self, world, y=None, x=None):
         self.world = world
         if y is None:
-            y = world.ground_level - 2
+            y = curses.LINES - 5
         if x is None:
             x = int(curses.COLS/2)
-        self.window = curses.newwin(2, 2, y, x)
-        self.window.addstr(0, 0, "p")
-        self.window.addstr(1, 0, "|")
+        self.window = curses.newwin(2, 1, y, x)
+        self.window.addch(0, 0, ord("p"))
+        self.window.insch(1, 0, ord("|"))
         self.facing = 1
         self.panel = curses.panel.new_panel(self.window)
         self.physics = physics.Physics(self, y, x)

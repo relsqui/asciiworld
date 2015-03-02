@@ -4,12 +4,12 @@ import player
 class World(object):
     tick_count = 0
 
-    def __init__(self, stdscr):
-        self.window = stdscr
-        self.ground_level = curses.LINES - 3
-        self.window.addstr(self.ground_level, 0, "-" * curses.COLS)
-        self.status_line = curses.newwin(2, curses.COLS-1,
-                                         self.ground_level+1, 0)
+    def __init__(self):
+        self.window = curses.newwin(curses.LINES-2, curses.COLS-1, 0, 0)
+        self.window.box()
+        self.window.addch(curses.LINES-4, 10, "*")
+        self.panel = curses.panel.new_panel(self.window)
+        self.status_line = curses.newwin(2, curses.COLS-1, curses.LINES-2, 0)
         self.status_panel = curses.panel.new_panel(self.status_line)
         self.player = player.Player(self)
 

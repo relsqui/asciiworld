@@ -21,4 +21,8 @@ class Physics(object):
             self.vector[X] -= self.friction * self.direction
         self.position[X] += self.vector[X]
         self.obj.panel.move(*self.position)
-        self.obj.world.set_status("Tik ({}) / Pos ({}, {}) / Vec ({}, {})".format(*[self.obj.world.tick_count] + self.position + self.vector))
+        tik = self.obj.world.tick_count
+        pos_y, pos_x = self.position
+        vec_y, vec_x = self.vector
+        ovr = chr(self.obj.world.window.inch(self.position[Y]+1, self.position[X]))
+        self.obj.world.set_status("Tik ({}) / Pos ({}, {}) / Vec ({}, {}) / Ovr ({})".format(tik, pos_y, pos_x, vec_y, vec_x, ovr))

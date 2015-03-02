@@ -1,15 +1,15 @@
 #!/usr/bin/python
 
-import curses, curses.panel, time
+import curses, curses.panel
 import world
 
-LOOP_TIME = .1
+TICK_TIME = 100
 
 def main(stdscr):
     curses.curs_set(0)
     stdscr.nodelay(True)
     stdscr.clear()
-    game_world = world.World(stdscr)
+    game_world = world.World()
     c = None
     while True:
         # do things
@@ -22,7 +22,7 @@ def main(stdscr):
         game_world.tick()
         curses.panel.update_panels()
         stdscr.refresh()
-        time.sleep(LOOP_TIME)
+        curses.napms(TICK_TIME)
         c = stdscr.getch()
         curses.flushinp()
 
