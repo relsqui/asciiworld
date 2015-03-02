@@ -5,7 +5,7 @@ class World(object):
     tick_count = 0
 
     def __init__(self):
-        self.window = curses.newwin(curses.LINES-2, curses.COLS-1, 0, 0)
+        self.window = curses.newwin(curses.LINES-2, curses.COLS, 0, 0)
         self.window.box()
         self.window.addch(curses.LINES-4, 10, "*")
         self.panel = curses.panel.new_panel(self.window)
