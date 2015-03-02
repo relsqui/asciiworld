@@ -2,7 +2,7 @@
 
 import curses, curses.panel, time
 
-LOOP_TIME = .2
+LOOP_TIME = .1
 
 class World(object):
     def __init__(self, stdscr):
@@ -70,5 +70,7 @@ def main(stdscr):
         curses.panel.update_panels()
         stdscr.refresh()
         c = stdscr.getch()
+        curses.flushinp()
+        time.sleep(LOOP_TIME)
 
 curses.wrapper(main)
