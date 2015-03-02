@@ -15,3 +15,6 @@ class World(object):
         self.status_line.erase()
         self.status_line.addstr(0, 0, message)
         self.status_line.refresh()
+
+    def tick(self):
+        self.player.tick()

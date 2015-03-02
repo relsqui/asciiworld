@@ -3,7 +3,7 @@
 import curses, curses.panel, time
 import world
 
-LOOP_TIME = .1
+#LOOP_TIME = .1
 
 def main(stdscr):
     curses.curs_set(0)
@@ -16,13 +16,14 @@ def main(stdscr):
         if c == ord('q'):
             break
         elif c == ord('h'):
-            game_world.player.move(0, -1)
+            game_world.player.walk(-1)
         elif c == ord('l'):
-            game_world.player.move(0, 1)
+            game_world.player.walk(1)
+        game_world.tick()
         curses.panel.update_panels()
         stdscr.refresh()
+        #time.sleep(LOOP_TIME)
         c = stdscr.getch()
         curses.flushinp()
-        time.sleep(LOOP_TIME)
 
 curses.wrapper(main)
