@@ -1,3 +1,5 @@
+import curses
+
 Y = 0
 X = 1
 
@@ -11,7 +13,7 @@ class Physics(object):
         self.obj = obj
         self.position = [y, x]
         self.vector = [0, 0]
-        self.above = self.obj.world.window.inch(self.position[Y]+2,
+        self.below = self.obj.world.window.inch(self.position[Y]+2,
                                                 self.position[X])
 
         # walking constants (absolute values).
@@ -23,7 +25,7 @@ class Physics(object):
         # jumping constants (positive is down)
         self.gravity = 1
         self.max_fall = 3
-        self.jump_accel = -2
+        self.jump_accel = -3
 
     def walk(self, direction):
         self.direction = direction
@@ -31,27 +33,30 @@ class Physics(object):
             self.vector[X] += self.walk_accel * self.direction
 
     def jump(self):
-        if not is_solid(self.above) or self.vector[Y] != 0:
+        if not is_solid(self.below) or self.vector[Y] != 0:
             return
         self.vector[Y] += self.jump_accel
 
     def update_debug(self):
         pos_y, pos_x = self.position
         vec_y, vec_x = self.vector
-        self.above = self.obj.world.window.inch(self.position[Y]+2,
+        self.below = self.obj.world.window.inch(self.position[Y]+2,
                                                 self.position[X])
         status = ("Position ({:2}, {:2}) / Vector ({:2}, {:2}) / Over ({})")
-        status = status.format(pos_y, pos_x, vec_y, vec_x, self.above)
+        status = status.format(pos_y, pos_x, vec_y, vec_x, self.below)
         self.obj.world.set_status(status)
 
     def tick(self):
         new_y = self.vector[Y]
         new_x = self.vector[X]
 
-        if is_solid(self.above):
+        if is_solid(self.below):
             if self.vector[X]:
                 # if walking, apply friction
                 new_x -= self.friction * self.direction
+            if self.vector[Y] > 0:
+                # we were falling but we hit something
+                new_y = 0
         else:
             # if jumping or falling, apply gravity
             new_y += self.gravity
@@ -60,8 +65,11 @@ class Physics(object):
         self.vector[X] = new_x
 
         # move to new position
-        self.position[X] += self.vector[X]
         self.position[Y] += self.vector[Y]
+        self.position[X] += self.vector[X]
+        self.position[Y] = max(min(self.position[Y],
+                                    self.obj.world.ground_level-2), 1)
+        self.position[X] = max(min(self.position[X], curses.COLS-2), 1)
         self.obj.panel.move(*self.position)
 
         self.update_debug()

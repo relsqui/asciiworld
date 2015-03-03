@@ -11,6 +11,7 @@ class World(object):
         self.panel = curses.panel.new_panel(self.window)
         self.status_line = curses.newwin(2, curses.COLS-1, curses.LINES-2, 0)
         self.status_panel = curses.panel.new_panel(self.status_line)
+        self.ground_level = curses.LINES - 3
         self.player = player.Player(self)
 
     def set_status(self, message):
