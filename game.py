@@ -10,22 +10,23 @@ def main(stdscr):
     stdscr.nodelay(True)
     stdscr.clear()
     game_world = world.World()
-    c = None
+    keys = set()
     while True:
         # do things
-        if c == ord("q"):
+        if ord("q") in keys:
             break
-        elif c == ord("h"):
+        elif ord("h") in keys:
             game_world.player.walk(-1)
-        elif c == ord("l"):
+        elif ord("l") in keys:
             game_world.player.walk(1)
-        elif c == ord(" "):
+        elif ord(" ") in keys:
             game_world.player.jump()
         game_world.tick()
         curses.panel.update_panels()
         stdscr.refresh()
+        keys = set()
         curses.napms(TICK_TIME)
-        c = stdscr.getch()
-        curses.flushinp()
+        while -1 not in keys:
+            keys.add(stdscr.getch())
 
 curses.wrapper(main)
