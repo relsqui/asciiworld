@@ -14,6 +14,7 @@ class Player(object):
         self.facing = 1
         self.panel = curses.panel.new_panel(self.window)
         self.physics = physics.Physics(self, y, x)
+        self.above = None
 
     def tick(self):
         self.physics.tick()
@@ -35,3 +36,6 @@ class Player(object):
             # if we changed direction, that takes up the move
             return
         self.physics.walk(direction)
+
+    def jump(self):
+        self.physics.jump()

@@ -13,12 +13,14 @@ def main(stdscr):
     c = None
     while True:
         # do things
-        if c == ord('q'):
+        if c == ord("q"):
             break
-        elif c == ord('h'):
+        elif c == ord("h"):
             game_world.player.walk(-1)
-        elif c == ord('l'):
+        elif c == ord("l"):
             game_world.player.walk(1)
+        elif c == ord(" "):
+            game_world.player.jump()
         game_world.tick()
         curses.panel.update_panels()
         stdscr.refresh()
