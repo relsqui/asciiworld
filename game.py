@@ -15,11 +15,11 @@ def main(stdscr):
         # do things
         if ord("q") in keys:
             break
-        elif ord("h") in keys:
+        if ord("h") in keys:
             game_world.player.walk(-1)
-        elif ord("l") in keys:
+        if ord("l") in keys:
             game_world.player.walk(1)
-        elif ord(" ") in keys:
+        if ord(" ") in keys:
             game_world.player.jump()
         game_world.tick()
         curses.panel.update_panels()
