@@ -47,28 +47,29 @@ class Physics(object):
         self.obj.world.set_status(status)
 
     def tick(self):
-        new_y = self.vector[Y]
-        new_x = self.vector[X]
+        new_y_vec = self.vector[Y]
+        new_x_vec = self.vector[X]
 
         if is_solid(self.below):
             if self.vector[X]:
                 # if walking, apply friction
-                new_x -= self.friction * self.direction
+                new_x_vec -= self.friction * self.direction
             if self.vector[Y] > 0:
                 # we were falling but we hit something
-                new_y = 0
+                new_y_vec = 0
         else:
             # if jumping or falling, apply gravity
-            new_y += self.gravity
+            new_y_vec += self.gravity
 
-        self.vector[Y] = min(new_y, self.max_fall)
-        self.vector[X] = new_x
+        self.vector[Y] = min(new_y_vec, self.max_fall)
+        self.vector[X] = new_x_vec
 
-        # move to new position
+        # move to new position and constrain to bounding box
         self.position[Y] += self.vector[Y]
         self.position[X] += self.vector[X]
-        self.position[Y] = max(min(self.position[Y],
-                                    self.obj.world.ground_level-2), 1)
+        # we don't need to check the high (bottom) bound for Y, because
+        # we already did when we were choosing whether to apply gravity
+        self.position[Y] = max(self.position[Y], 1)
         self.position[X] = max(min(self.position[X], curses.COLS-2), 1)
         self.obj.panel.move(*self.position)
 

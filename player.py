@@ -5,7 +5,7 @@ class Player(object):
     def __init__(self, world, y=None, x=None):
         self.world = world
         if y is None:
-            y = curses.LINES - 5
+            y = int(curses.LINES/2)
         if x is None:
             x = int(curses.COLS/2)
         self.window = curses.newwin(2, 1, y, x)
