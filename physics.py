@@ -67,9 +67,8 @@ class Physics(object):
         # move to new position and constrain to bounding box
         self.position[Y] += self.vector[Y]
         self.position[X] += self.vector[X]
-        # we don't need to check the high (bottom) bound for Y, because
-        # we already did when we were choosing whether to apply gravity
-        self.position[Y] = max(self.position[Y], 1)
+        # this is a hack until we have proper collision detection
+        self.position[Y] = max(min(self.position[Y], curses.LINES-4), 1)
         self.position[X] = max(min(self.position[X], curses.COLS-2), 1)
         self.obj.panel.move(*self.position)
 
