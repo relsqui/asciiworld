@@ -68,8 +68,8 @@ class Physics(object):
         else:
             slope_unit = float(self.vector[X])/float(self.vector[Y])
             slope = slope_unit
-            for x in range(self.position[X], target_pos[X]):
-                y = int(self.position[Y] + slope)
+            for y in range(self.position[Y], target_pos[Y]):
+                x = int(self.position[X] + slope)
                 self.mark(y, x)
                 slope += slope_unit
         self.mark(*target_pos)
