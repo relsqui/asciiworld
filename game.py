@@ -10,6 +10,7 @@ def main(stdscr):
     stdscr.nodelay(True) # don't wait for enter before reading keys
     stdscr.clear() # empty the screen
     game_world = world.World()
+    keys = set()
     while True:
         # do things
         if ord("q") in keys:
