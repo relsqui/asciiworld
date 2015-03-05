@@ -3,6 +3,10 @@ import physics
 
 class Player(object):
     def __init__(self, world, y=None, x=None):
+        """
+        Initialize position, sprite, and physics.
+        This hardcodes some stuff that won't be later, just for prototyping.
+        """
         self.world = world
         if y is None:
             y = int(curses.LINES/2)
@@ -17,6 +21,10 @@ class Player(object):
         self.above = None
 
     def tick(self):
+        """
+        Execute an update cycle. Currently just passes through to physics,
+        but could also be used for walk animations and so forth.
+        """
         self.physics.tick()
 
     def face(self, direction):
@@ -32,10 +40,16 @@ class Player(object):
         return False
 
     def walk(self, direction):
+        """
+        Execute a walk command from the (human) player.
+        """
         if self.face(direction):
             # if we changed direction, that takes up the move
             return
         self.physics.walk(direction)
 
     def jump(self):
+        """
+        Execute a walk command from the (human) player.
+        """
         self.physics.jump()

@@ -6,11 +6,10 @@ import world
 TICK_TIME = 100
 
 def main(stdscr):
-    curses.curs_set(0)
-    stdscr.nodelay(True)
-    stdscr.clear()
+    curses.curs_set(0) # don't show the cursor
+    stdscr.nodelay(True) # don't wait for enter before reading keys
+    stdscr.clear() # empty the screen
     game_world = world.World()
-    keys = set()
     while True:
         # do things
         if ord("q") in keys:
@@ -27,6 +26,7 @@ def main(stdscr):
         keys = set()
         curses.napms(TICK_TIME)
         while -1 not in keys:
+            # collect all the keypresses which occurred during the tick delay
             keys.add(stdscr.getch())
 
 curses.wrapper(main)
