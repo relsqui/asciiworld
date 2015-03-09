@@ -11,6 +11,11 @@ def is_solid(y, x):
         return False
     return True
 
+class CollisionError(Exception):
+    def __init__(self, position, vector):
+        self.position = position
+        self.vector = vector
+
 class Physics(object):
     """
     Attributes and methods which are relevant to the physics of a game entity.
@@ -72,20 +77,20 @@ class Physics(object):
         elif not self.vector[X]:
             x = self.position[X]
             for y in range(self.position[Y], target_pos[Y], step[Y]):
-                self.mark(y, x)
-                self.mark(y+1, x)
+                if is_solid(y, x) or is_solid(y+1, x):
+                    raise CollisionError([y-step[Y], x], [-3, 0])
         elif not self.vector[Y]:
             y = self.position[Y]
             for x in range(self.position[X], target_pos[X], step[X]):
-                self.mark(y, x)
-                self.mark(y+1, x)
+                if is_solid(y, x) or is_solid(y+1, x):
+                    raise CollisionError([y, x-step[X]], [0, -3])
         else:
             y_inc = float(self.vector[Y])/abs(float(self.vector[X]))
             y_offset = y_inc
             for x in range(self.position[X], target_pos[X], step[X]):
                 y = int(self.position[Y] + y_offset)
-                self.mark(y, x)
-                self.mark(y+1, x)
+                if is_solid(y, x) or is_solid(y+1, x):
+                    raise CollisionError([self.position[Y], x-step[X]], [0, 0])
                 y_offset += y_inc
 
     def walk(self, direction):
@@ -141,13 +146,17 @@ class Physics(object):
         self.vector[Y] = min(new_y_vec, self.max_fall)
         self.vector[X] = new_x_vec
 
-        self.sweep_collision()
+        try:
+            self.sweep_collision()
+        except CollisionError as e:
+            self.position = e.position
+            self.vector = e.vector
         # move to new position and constrain to bounding box
         self.position[Y] += self.vector[Y]
         self.position[X] += self.vector[X]
         # this is a hack until we have proper collision detection
-        self.position[Y] = max(min(self.position[Y], curses.LINES-5), 1)
-        self.position[X] = max(min(self.position[X], curses.COLS-2), 1)
+        #self.position[Y] = max(min(self.position[Y], curses.LINES-5), 1)
+        #self.position[X] = max(min(self.position[X], curses.COLS-2), 1)
         self.obj.panel.move(*self.position)
         self.below = [self.position[Y]+2, self.position[X]]
         self.update_debug()
