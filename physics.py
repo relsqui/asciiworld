@@ -78,12 +78,12 @@ class Physics(object):
             x = self.position[X]
             for y in range(self.position[Y], target_pos[Y], step[Y]):
                 if is_solid(y, x) or is_solid(y+1, x):
-                    raise CollisionError([y-step[Y], x], [-3, 0])
+                    raise CollisionError([y-step[Y], x], [0, 0])
         elif not self.vector[Y]:
             y = self.position[Y]
             for x in range(self.position[X], target_pos[X], step[X]):
                 if is_solid(y, x) or is_solid(y+1, x):
-                    raise CollisionError([y, x-step[X]], [0, -3])
+                    raise CollisionError([y, x-step[X]], [0, 0])
         else:
             y_inc = float(self.vector[Y])/abs(float(self.vector[X]))
             y_offset = y_inc
@@ -146,11 +146,16 @@ class Physics(object):
         self.vector[Y] = min(new_y_vec, self.max_fall)
         self.vector[X] = new_x_vec
 
-        try:
-            self.sweep_collision()
-        except CollisionError as e:
-            self.position = e.position
-            self.vector = e.vector
+        position_ok = False
+        while not position_ok:
+            # keep testing positions until one of them doesn't collide
+            try:
+                self.sweep_collision()
+            except CollisionError as e:
+                self.position = e.position
+                self.vector = e.vector
+            else:
+                position_ok = True
         # move to new position and constrain to bounding box
         self.position[Y] += self.vector[Y]
         self.position[X] += self.vector[X]
