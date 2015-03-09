@@ -54,25 +54,27 @@ class Physics(object):
         In testing, don't actually change anything, just mark the places
         that were checked.
         """
-        target_pos = list(self.position)
-        target_pos[Y] += self.vector[Y]
-        target_pos[X] += self.vector[X]
+        target_pos = [0, 0]
+        step = [0, 0]
+        for i in [Y, X]:
+            target_pos[i] = self.position[i] + self.vector[i]
+            step[i] = 1 if self.position[i] < target_pos[i] else -1
         if not self.vector[X]:
             x = self.position[X]
-            for y in range(self.position[Y], target_pos[Y]):
+            for y in range(self.position[Y], target_pos[Y], step[Y]):
                 self.mark(y, x)
         elif not self.vector[Y]:
             y = self.position[Y]
-            for x in range(self.position[X], target_pos[X]):
+            for x in range(self.position[X], target_pos[X], step[X]):
                 self.mark(y, x)
         else:
-            slope_unit = float(self.vector[X])/float(self.vector[Y])
-            slope = slope_unit
-            for y in range(self.position[Y], target_pos[Y]):
-                x = int(self.position[X] + slope)
+            x_inc = float(self.vector[X])/abs(float(self.vector[Y]))
+            x_offset = x_inc
+            for y in range(self.position[Y], target_pos[Y], step[Y]):
+                x = int(self.position[X] + x_offset)
                 self.mark(y, x)
-                slope += slope_unit
-        self.mark(*target_pos)
+                x_offset += x_inc
+        #self.mark(*target_pos)
 
     def walk(self, direction):
         """
@@ -139,4 +141,4 @@ class Physics(object):
         self.obj.panel.move(*self.position)
         self.below = self.obj.world.window.inch(self.position[Y]+2,
                                                 self.position[X])
-        self.update_debug()
+        #self.update_debug()
