@@ -59,22 +59,29 @@ class Physics(object):
         for i in [Y, X]:
             target_pos[i] = self.position[i] + self.vector[i]
             step[i] = 1 if self.position[i] < target_pos[i] else -1
-        if not self.vector[X]:
+        if self.vector == [0, 0]:
+            pass
+        elif not self.vector[X]:
             x = self.position[X]
             for y in range(self.position[Y], target_pos[Y], step[Y]):
                 self.mark(y, x)
+                self.mark(y+1, x)
         elif not self.vector[Y]:
             y = self.position[Y]
             for x in range(self.position[X], target_pos[X], step[X]):
                 self.mark(y, x)
+                self.mark(y+1, x)
         else:
             x_inc = float(self.vector[X])/abs(float(self.vector[Y]))
             x_offset = x_inc
             for y in range(self.position[Y], target_pos[Y], step[Y]):
                 x = int(self.position[X] + x_offset)
                 self.mark(y, x)
+                self.mark(y+1, x)
                 x_offset += x_inc
-        #self.mark(*target_pos)
+        self.mark(*target_pos)
+        target_pos[Y] += 1
+        self.mark(*target_pos)
 
     def walk(self, direction):
         """
