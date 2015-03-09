@@ -87,9 +87,6 @@ class Physics(object):
                 self.mark(y, x)
                 self.mark(y+1, x)
                 y_offset += y_inc
-        self.mark(*target_pos)
-        target_pos[Y] += 1
-        self.mark(*target_pos)
 
     def walk(self, direction):
         """
