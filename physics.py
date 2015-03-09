@@ -72,13 +72,13 @@ class Physics(object):
                 self.mark(y, x)
                 self.mark(y+1, x)
         else:
-            x_inc = float(self.vector[X])/abs(float(self.vector[Y]))
-            x_offset = x_inc
-            for y in range(self.position[Y], target_pos[Y], step[Y]):
-                x = int(self.position[X] + x_offset)
+            y_inc = float(self.vector[Y])/abs(float(self.vector[X]))
+            y_offset = y_inc
+            for x in range(self.position[X], target_pos[X], step[X]):
+                y = int(self.position[Y] + y_offset)
                 self.mark(y, x)
                 self.mark(y+1, x)
-                x_offset += x_inc
+                y_offset += y_inc
         self.mark(*target_pos)
         target_pos[Y] += 1
         self.mark(*target_pos)
