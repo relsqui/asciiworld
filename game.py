@@ -15,6 +15,8 @@ def main(stdscr):
         # do things
         if ord("q") in keys:
             break
+        if ord("c") in keys:
+            game_world.create_map()
         if ord("h") in keys:
             game_world.player.walk(-1)
         if ord("l") in keys:

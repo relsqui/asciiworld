@@ -12,12 +12,16 @@ class World(object):
         Initialize windows and make a player.
         """
         self.window = curses.newwin(curses.LINES-2, curses.COLS, 0, 0)
-        self.window.box()
-        self.window.addch(curses.LINES-4, 10, "*")
+        self.create_map()
         self.panel = curses.panel.new_panel(self.window)
         self.status_line = curses.newwin(2, curses.COLS-1, curses.LINES-2, 0)
         self.status_panel = curses.panel.new_panel(self.status_line)
         self.player = player.Player(self, 40, 1)
+
+    def create_map(self):
+        self.window.clear()
+        self.window.box()
+        self.window.addch(curses.LINES-4, 10, "*")
 
     def set_status(self, message):
         """
