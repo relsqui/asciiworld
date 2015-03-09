@@ -4,6 +4,12 @@ Y = 0
 X = 1
 
 TRAVERSIBLES = map(ord, " .:")
+world = None # this will be initialized when Physics is instantiated
+
+def is_solid(y, x):
+    if world.window.inch(y, x) in TRAVERSIBLES:
+        return False
+    return True
 
 class Physics(object):
     """
@@ -16,11 +22,13 @@ class Physics(object):
         """
         Initialize physical constants etc.
         """
+        global world
+
         self.obj = obj
+        world = self.obj.world
         self.position = [y, x]
         self.vector = [0, 0]
-        self.below = self.obj.world.window.inch(self.position[Y]+2,
-                                                self.position[X])
+        self.below = [self.position[Y]+2, self.position[X]]
 
         # walking constants (absolute values)
         self.friction = 1
@@ -39,10 +47,10 @@ class Physics(object):
         (For debugging purposes.)
         """
         try:
-            self.obj.world.set_status("Marking {}, {}".format(y, x))
-            self.obj.world.window.addch(y, x, ".")
+            world.window.addch(y, x, ".")
         except curses.error:
-            self.obj.world.set_status("Can't mark {}, {} (out of bounds)".format(y, x))
+            # out of bounds
+            pass
 
     def sweep_collision(self):
         """
@@ -100,7 +108,7 @@ class Physics(object):
         this *does* check whether the surface the entity is on is jumpable
         (no double-jumping).
         """
-        if self.below in TRAVERSIBLES or self.vector[Y] != 0:
+        if self.vector[Y] != 0 or not is_solid(*self.below):
             return
         self.vector[Y] += self.jump_accel
 
@@ -109,11 +117,9 @@ class Physics(object):
         Put handy debugging information in the status bar.
         "Over" means "the number of the character the player is standing on."
         """
-        pos_y, pos_x = self.position
-        vec_y, vec_x = self.vector
-        status = ("Position ({:2}, {:2}) / Vector ({:2}, {:2}) / Over ({})")
-        status = status.format(pos_y, pos_x, vec_y, vec_x, self.below)
-        self.obj.world.set_status(status)
+        status = ("Position {} / Vector {} / Below {}")
+        status = status.format(self.position, self.vector, self.below)
+        world.set_status(status)
 
     def tick(self):
         """
@@ -124,7 +130,7 @@ class Physics(object):
         new_y_vec = self.vector[Y]
         new_x_vec = self.vector[X]
 
-        if self.below not in TRAVERSIBLES:
+        if is_solid(*self.below):
             if self.vector[X]:
                 # if walking, apply friction
                 new_x_vec -= self.friction * self.direction
@@ -146,6 +152,5 @@ class Physics(object):
         self.position[Y] = max(min(self.position[Y], curses.LINES-5), 1)
         self.position[X] = max(min(self.position[X], curses.COLS-2), 1)
         self.obj.panel.move(*self.position)
-        self.below = self.obj.world.window.inch(self.position[Y]+2,
-                                                self.position[X])
-        #self.update_debug()
+        self.below = [self.position[Y]+2, self.position[X]]
+        self.update_debug()
